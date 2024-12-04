@@ -71,6 +71,7 @@ function onSearchForm(evt) {
         gallery.insertAdjacentHTML('beforeend', createMarkup(response.hits));
         lightbox.refresh();
       } else {
+        loadMoreBtn.classList.add('hidden');
         iziToast.error({
           message:
             'Sorry, there are no images matching your search query. Please try again!',
@@ -80,6 +81,7 @@ function onSearchForm(evt) {
     })
     .catch(error => {
       console.log(error);
+      loadMoreBtn.classList.add('hidden');
       iziToast.error({
         message:
           'Sorry, there are some problems with connection. Please reload the page and try again!',
