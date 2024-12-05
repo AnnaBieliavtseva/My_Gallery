@@ -1,3 +1,5 @@
+import axios from 'axios';
+
 import iziToast from 'izitoast';
 import 'izitoast/dist/css/iziToast.min.css';
 
@@ -12,40 +14,32 @@ const gallery = document.querySelector('.gallery');
 const form = document.querySelector('.search-form');
 const loader = document.querySelector('.loader');
 const loadMoreBtn = document.querySelector('.js-load');
-export let currentPage = 1;
+let userQuery;
+let currentPage = 1;
+let perPage = 15;
 
 let lightbox = new SimpleLightbox('.gallery a', {
   captionsData: 'alt',
   captionDelay: 300,
 });
 
-let userQuery;
-
-
-
 form.addEventListener('submit', onSearchForm);
 loadMoreBtn.addEventListener('click', onLoadBtnClick);
 
-const API_KEY = '29882819-d1b2e59da7ad20757f8559035';
+async function fetchApi(page = 1) {
+  const response = await axios('https://pixabay.com/api/', {
+    params: {
+      key: import.meta.env.VITE_API_KEY,
+      q: userQuery,
+      image_type: 'photo',
+      orientation: 'horizontal',
+      safesearch: true,
+      page: currentPage,
+      per_page: perPage,
+    },
+  });
 
-export const params = new URLSearchParams({
-  key: API_KEY,
-  image_type: 'photo',
-  orientation: 'horizontal',
-  safesearch: true,
-  
-  per_page: 15,
-});
-
-function fetchApi(page = 1) {
-  return fetch(`https://pixabay.com/api/?${params}&page=${currentPage}`).then(
-    response => {
-      if (!response.ok) {
-        throw new Error(response.statusText);
-      }
-      return response.json();
-    }
-  );
+  return response.data;
 }
 
 function onSearchForm(evt) {
@@ -59,8 +53,6 @@ function onSearchForm(evt) {
     return;
   }
 
-  params.set('q', userQuery);
-  console.log(params.per_page)
   if (userQuery) {
     currentPage = 1;
   }
@@ -98,33 +90,30 @@ function onSearchForm(evt) {
 }
 
 function onLoadBtnClick() {
-  loader.classList.remove('hidden');
   currentPage += 1;
-  const perPageValue = +(params.get('per_page'))
-  
+  loader.classList.remove('hidden');
 
   fetchApi(currentPage)
-    .then(response => {     
-
+    .then(response => {
       gallery.insertAdjacentHTML('beforeend', createMarkup(response.hits));
       lightbox.refresh();
-      
-    //   if ((perPageValue * currentPage) >= response.totalHits) {
-    //     iziToast.info({
-    //       message: "We're sorry, but you've reached the end of search results.",
-    //       position: 'topRight',
-    //     });
-    //     loadMoreBtn.classList.add('hidden');
-    //  }
-      
-      if (currentPage === Math.ceil(response.totalHits/perPageValue)) {
-       iziToast.info({
-         message: "We're sorry, but you've reached the end of search results.",
-         position: 'topRight',
-       });
-       loadMoreBtn.classList.add('hidden');
+
+      //   if ((perPageValue * currentPage) >= response.totalHits) {
+      //     iziToast.info({
+      //       message: "We're sorry, but you've reached the end of search results.",
+      //       position: 'topRight',
+      //     });
+      //     loadMoreBtn.classList.add('hidden');
+      //  }
+
+      if (currentPage === Math.ceil(response.totalHits / perPage)) {
+        loader.classList.add('hidden');
+        iziToast.info({
+          message: "We're sorry, but you've reached the end of search results.",
+          position: 'topRight',
+        });
+        loadMoreBtn.classList.add('hidden');
       }
-      
     })
     .catch(error => {
       console.log(error);
@@ -132,7 +121,7 @@ function onLoadBtnClick() {
         message:
           'Sorry, there are some problems with connection. Please reload the page and try again!',
         position: 'topRight',
-      })
+      });
     })
     .finally(() => {
       loader.classList.add('hidden');
