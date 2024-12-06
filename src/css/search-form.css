@@ -12,7 +12,7 @@
  }
 
  .photo-card {
-     flex-basis: calc((100% - 80px) / 4);
+     flex-basis: calc((100% - 100px) / 5);
      margin: 10px;
  }
 
@@ -22,14 +22,16 @@
  }
 
  .link {
-     max-height: 100%;
+    display: block;
+    max-width: 100%;
  }
 
  .info {
-     padding: 5px;
-     display: flex;
-     justify-content: space-between;
-     align-items: center;
+    font-size: 14px;
+    padding: 5px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
  }
  .info-item {
     display: flex;
@@ -62,6 +64,7 @@
 .btn:focus {
     background-color: #6C8CFF;
 }
+
 input {
     font-size: 16px;
     width: 272px;

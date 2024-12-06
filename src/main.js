@@ -6,7 +6,7 @@ import 'izitoast/dist/css/iziToast.min.css';
 import SimpleLightbox from 'simplelightbox';
 import 'simplelightbox/dist/simple-lightbox.min.css';
 
-// import { fetchApi, params } from './js/pixabay-api.js';
+import fetchApi from './js/pixabay-api.js';
 
 import createMarkup from './js/render-functions.js';
 
@@ -14,9 +14,9 @@ const gallery = document.querySelector('.gallery');
 const form = document.querySelector('.search-form');
 const loader = document.querySelector('.loader');
 const loadMoreBtn = document.querySelector('.js-load');
-let userQuery;
-let currentPage = 1;
-let perPage = 15;
+export let userQuery;
+export let currentPage = 1;
+export let perPage = 15;
 
 let lightbox = new SimpleLightbox('.gallery a', {
   captionsData: 'alt',
@@ -25,22 +25,6 @@ let lightbox = new SimpleLightbox('.gallery a', {
 
 form.addEventListener('submit', onSearchForm);
 loadMoreBtn.addEventListener('click', onLoadBtnClick);
-
-async function fetchApi(page = 1) {
-  const response = await axios('https://pixabay.com/api/', {
-    params: {
-      key: import.meta.env.VITE_API_KEY,
-      q: userQuery,
-      image_type: 'photo',
-      orientation: 'horizontal',
-      safesearch: true,
-      page: currentPage,
-      per_page: perPage,
-    },
-  });
-
-  return response.data;
-}
 
 function onSearchForm(evt) {
   evt.preventDefault();
@@ -64,7 +48,13 @@ function onSearchForm(evt) {
     .then(response => {
       if (response.hits.length) {
         gallery.insertAdjacentHTML('beforeend', createMarkup(response.hits));
+
+        const card = document.querySelector('.photo-card');
+        const cardHeight = card.getBoundingClientRect();
+        scrollGallery(cardHeight);
+
         lightbox.refresh();
+
         loadMoreBtn.classList.remove('hidden');
       } else {
         iziToast.error({
@@ -96,9 +86,13 @@ function onLoadBtnClick() {
   fetchApi(currentPage)
     .then(response => {
       gallery.insertAdjacentHTML('beforeend', createMarkup(response.hits));
+      const card = document.querySelector('.photo-card');
+      const cardHeight = card.getBoundingClientRect();
+      scrollGallery(cardHeight);
+
       lightbox.refresh();
 
-      //   if ((perPageValue * currentPage) >= response.totalHits) {
+      //   if ((perPage * currentPage) >= response.totalHits) {
       //     iziToast.info({
       //       message: "We're sorry, but you've reached the end of search results.",
       //       position: 'topRight',
@@ -126,4 +120,12 @@ function onLoadBtnClick() {
     .finally(() => {
       loader.classList.add('hidden');
     });
+}
+
+function scrollGallery(cardHeight) {
+  window.scrollBy({
+    top: 2 * cardHeight.height,
+    left: 0,
+    behavior: 'smooth',
+  });
 }

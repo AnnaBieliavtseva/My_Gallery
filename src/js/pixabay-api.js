@@ -18,3 +18,21 @@
 //     return response.json();
 //   });
 // }
+import axios from 'axios';
+import { userQuery, currentPage, perPage } from '../main';
+
+export default async function fetchApi(page = 1) {
+  const response = await axios('https://pixabay.com/api/', {
+    params: {
+      key: import.meta.env.VITE_API_KEY,
+      q: userQuery,
+      image_type: 'photo',
+      orientation: 'horizontal',
+      safesearch: true,
+      page: currentPage,
+      per_page: perPage,
+    },
+  });
+
+  return response.data;
+}
