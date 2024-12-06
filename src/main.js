@@ -55,7 +55,14 @@ function onSearchForm(evt) {
 
         lightbox.refresh();
 
-        loadMoreBtn.classList.remove('hidden');
+        if (
+          response.hits.length < perPage ||
+          currentPage === Math.ceil(response.totalHits / perPage)
+        ) {
+          loadMoreBtn.classList.add('hidden');
+        } else {
+          loadMoreBtn.classList.remove('hidden');
+        }
       } else {
         iziToast.error({
           message:
