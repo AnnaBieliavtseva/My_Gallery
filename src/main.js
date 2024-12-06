@@ -56,7 +56,7 @@ function onSearchForm(evt) {
         lightbox.refresh();
 
         if (
-          response.hits.length < perPage ||
+          response.totalHits < perPage ||
           currentPage === Math.ceil(response.totalHits / perPage)
         ) {
           loadMoreBtn.classList.add('hidden');
