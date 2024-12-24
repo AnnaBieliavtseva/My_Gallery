@@ -3,7 +3,22 @@
  
   margin: 0 auto;
   padding: 0 15px;
+  min-width: 320px;
+  max-width: 375px;
+}
 
-  min-width: 1200px;
-  }
+/* Styles for Tablet devices */
+@media screen and (min-width: 768px) {
+    .container {
+        max-width: 768px;
+        padding: 0 32px;
+    }
+}
 
+/* Styles for Desktop devices */
+@media screen and (min-width: 1440px) {
+    .container {
+        max-width: 1440px;
+        padding: 0 32px;
+    }
+}
