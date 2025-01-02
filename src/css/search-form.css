@@ -17,19 +17,22 @@
 
 }
 
-input {
+form input {
     font-size: 16px;
     height: 40px;
     margin-right: 10px;
     line-height: 1.5;
-    border: 1px solid #808080;
+    border: 1px solid rgb(0, 0, 255);
+    outline-color: rgb(0, 0, 255);
     border-radius: 4px;
     color: #808080;
 
 }
 
-input:hover {
+
+input:placeholder-shown {
     border-color: rgb(0, 0, 0, 0.2);
+    outline-color: rgb(0, 0, 0, 0.2);
 }
 
 .btn {
@@ -57,6 +60,7 @@ input:hover {
 
 .photo-thumb {
     width: 100%;
+    overflow: hidden;
 }
 
  .photo-card {
@@ -68,9 +72,16 @@ input:hover {
      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
  }
 
+ .photo-card-img {
+    height: 200px;
+    width: 100%;
+ }
+
+
  .link {
     display: block;
     max-width: 100%;
+   
  }
 
   .info {
@@ -142,7 +153,7 @@ input:hover {
         max-width: 750px;
     }
     .photo-card {
-        flex-basis: calc((100% - 20px) / 3)
+        flex-basis: calc((100% - 20px) / 2)
     }
 
 
