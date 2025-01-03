@@ -56,7 +56,10 @@ input:placeholder-shown {
      display: flex;
      flex-wrap: wrap;
      gap: 10px;
+     /* margin-bottom: -10px; */
  }
+
+
 
 .photo-thumb {
     width: 100%;
@@ -164,9 +167,10 @@ input:placeholder-shown {
 @media screen and (min-width: 1440px) {
     .gallery {
             
-            gap: 5px;
+        margin: -5px;
         }
     .photo-card {
-        flex-basis: calc((100% - 20px) / 5)
+        flex-basis: calc((100% - 100px) / 5);
+        margin: 5px;
     }
 }

@@ -29,7 +29,7 @@ let lightbox = new SimpleLightbox('.gallery a', {
 const options = {
   root: null,
   rootMargin: '0px',
-  threshold: 0.2,
+  threshold: 0,
 };
 
 form.addEventListener('submit', onSearchForm);
@@ -161,26 +161,26 @@ function onSearchForm(evt) {
     .then(response => {
       if (response.hits.length) {
         gallery.insertAdjacentHTML('beforeend', createMarkup(response.hits));
-
+        // observer.observe(guard);
         const card = document.querySelector('.photo-card');
         const cardHeight = card.getBoundingClientRect();
         scrollGallery(cardHeight);
 
         lightbox.refresh();
-        if (
-          response.totalHits < perPage ||
-          currentPage === Math.ceil(response.totalHits / perPage)
-        ) {
-          observer.unobserve(guard);
+          if (
+            response.totalHits < perPage ||
+            currentPage === Math.ceil(response.totalHits / perPage)
+          ) {
+            observer.unobserve(guard);
+          } else {
+            observer.observe(guard);
+          }
         } else {
-          observer.observe(guard);
-        }
-      } else {
-        iziToast.error({
-          message:
-            'Sorry, there are no images matching your search query. Please try again!',
-          position: 'topRight',
-        });
+          iziToast.error({
+            message:
+              'Sorry, there are no images matching your search query. Please try again!',
+            position: 'topRight',
+          });
       }
     })
     .catch(error => {
@@ -195,7 +195,6 @@ function onSearchForm(evt) {
       evt.target.elements.searchQuery.value = '';
       loader.classList.add('hidden');
     });
-
 }
 
 function scrollGallery(cardHeight) {
@@ -215,6 +214,7 @@ function handlePagination(entries, observer) {
       fetchApi(currentPage)
         .then(response => {
           gallery.insertAdjacentHTML('beforeend', createMarkup(response.hits));
+          // observer.observe(guard);
           const card = document.querySelector('.photo-card');
           const cardHeight = card.getBoundingClientRect();
           scrollGallery(cardHeight);
